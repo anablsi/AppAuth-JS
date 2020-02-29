@@ -19,6 +19,7 @@
     <br/>
     <div class="card mdl-card mdl-shadow--2dp">
       <button class="mdl-button mdl-js-button mdl-button--raised" id="fetchConfig">Fetch Configuration</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised" id="fetchAADB2CConfig">Fetch Azure AD B2C Configuration</button>
       <button class="mdl-button mdl-js-button mdl-button--raised" id="authorize">Make Authorization Request</button>
       <button class="mdl-button mdl-js-button mdl-button--raised" id="makeTokenRequest">Make Token Request</button>
     </div>
@@ -54,6 +55,12 @@
       var fetchConfiguration = document.querySelector('#fetchConfig');
       fetchConfiguration.addEventListener('click', function (event) {
         application.fetchServiceConfiguration();
+        event.preventDefault();
+      });
+
+      var fetchAADB2CConfig = document.querySelector('#fetchAADB2CConfig');
+      fetchAADB2CConfig.addEventListener('click', function(event) {
+        application.fetchAADB2CServiceConfiguration();
         event.preventDefault();
       });
 
