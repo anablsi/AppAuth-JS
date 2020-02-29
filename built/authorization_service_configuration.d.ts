@@ -1,5 +1,13 @@
 import { Requestor } from './xhr';
 /**
+ * OpenIdConnect Issuer Configs
+ */
+export declare class OpenIdIssuerConfigs {
+    url: string;
+    prms: string;
+    constructor(url: string, prms: string);
+}
+/**
  * Represents AuthorizationServiceConfiguration as a JSON object.
  */
 export interface AuthorizationServiceConfigurationJson {
@@ -29,4 +37,5 @@ export declare class AuthorizationServiceConfiguration {
         userinfo_endpoint: string | undefined;
     };
     static fetchFromIssuer(openIdIssuerUrl: string, requestor?: Requestor): Promise<AuthorizationServiceConfiguration>;
+    static fetchFromIssuer(openIdIssuerConfigs: OpenIdIssuerConfigs, requestor?: Requestor): Promise<AuthorizationServiceConfiguration>;
 }

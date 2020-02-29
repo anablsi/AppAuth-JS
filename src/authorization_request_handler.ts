@@ -108,7 +108,7 @@ export abstract class AuthorizationRequestHandler {
 
     let query = this.utils.stringify(requestMap);
     let baseUrl = configuration.authorizationEndpoint;
-    let url = `${baseUrl}?${query}`;
+    let url = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${query}`;
     return url;
   }
 

@@ -17,7 +17,7 @@
 import { AuthorizationRequest } from '../authorization_request';
 import { AuthorizationNotifier, AuthorizationRequestHandler } from '../authorization_request_handler';
 import { AuthorizationResponse } from '../authorization_response';
-import { AuthorizationServiceConfiguration } from '../authorization_service_configuration';
+import { AuthorizationServiceConfiguration, OpenIdIssuerConfigs } from '../authorization_service_configuration';
 import { log } from '../logger';
 import { NodeCrypto } from '../node_support';
 import { NodeRequestor } from '../node_support/node_requestor';
@@ -37,8 +37,13 @@ const openIdConnectUrl = 'https://accounts.google.com';
 
 /* example client configuration */
 const clientId = '511828570984-7nmej36h9j2tebiqmpqh835naet4vci4.apps.googleusercontent.com';
+//const clientId = 'you azure ad b2c application id';
 const redirectUri = `http://127.0.0.1:${PORT}`;
 const scope = 'openid';
+
+/* example of Azure AD B2C provider */
+const openIdAADB2CConnectUrl = 'https://yoursubdomain.b2clogin.com/yoursubdomain.onmicrosoft.com/v2.0';
+const openIdAADB2CConnectPrms = 'p=B2C_1_UserFlowName';
 
 export class App {
   private notifier: AuthorizationNotifier;
@@ -72,6 +77,14 @@ export class App {
           log('Fetched service configuration', response);
           return response;
         });
+  }
+
+  fetchAADB2CServiceConfiguration(): Promise<AuthorizationServiceConfiguration> {
+    return AuthorizationServiceConfiguration.fetchFromIssuer(new OpenIdIssuerConfigs(openIdAADB2CConnectUrl, openIdAADB2CConnectPrms), requestor)
+      .then(response => {
+        log('Fetched service configuration', response);
+        return response;
+      });
   }
 
   makeAuthorizationRequest(configuration: AuthorizationServiceConfiguration) {

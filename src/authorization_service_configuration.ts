@@ -12,8 +12,16 @@
  * limitations under the License.
  */
 
+import {Auth} from 'hapi';
+
 import {JQueryRequestor, Requestor} from './xhr';
 
+/**
+ * OpenIdConnect Issuer Configs
+ */
+export class OpenIdIssuerConfigs {
+  constructor(public url: string, public prms: string) {}
+}
 
 /**
  * Represents AuthorizationServiceConfiguration as a JSON object.
@@ -69,8 +77,20 @@ export class AuthorizationServiceConfiguration {
   }
 
   static fetchFromIssuer(openIdIssuerUrl: string, requestor?: Requestor):
+      Promise<AuthorizationServiceConfiguration>;
+
+  static fetchFromIssuer(openIdIssuerConfigs: OpenIdIssuerConfigs, requestor?: Requestor):
+      Promise<AuthorizationServiceConfiguration>;
+
+  static fetchFromIssuer(openIdIssuerConfigs: OpenIdIssuerConfigs|string, requestor?: Requestor):
       Promise<AuthorizationServiceConfiguration> {
-    const fullUrl = `${openIdIssuerUrl}/${WELL_KNOWN_PATH}/${OPENID_CONFIGURATION}`;
+    const openIdIssuerUrl =
+        (typeof openIdIssuerConfigs === 'string') ? openIdIssuerConfigs : openIdIssuerConfigs.url;
+    const openIdIssuerPrms =
+        (typeof openIdIssuerConfigs === 'string') ? null : openIdIssuerConfigs.prms;
+
+    const fullUrl = `${openIdIssuerUrl}/${WELL_KNOWN_PATH}/${OPENID_CONFIGURATION}${
+        openIdIssuerPrms == null ? '' : '?' + openIdIssuerPrms}`;
 
     const requestorToUse = requestor || new JQueryRequestor();
 

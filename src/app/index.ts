@@ -16,7 +16,7 @@
 
 import {AuthorizationRequest} from '../authorization_request';
 import {AuthorizationNotifier, AuthorizationRequestHandler} from '../authorization_request_handler';
-import {AuthorizationServiceConfiguration} from '../authorization_service_configuration';
+import {AuthorizationServiceConfiguration, OpenIdIssuerConfigs} from '../authorization_service_configuration';
 import {log} from '../logger';
 import {RedirectRequestHandler} from '../redirect_based_handler';
 import {GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN, TokenRequest} from '../token_request';
@@ -47,8 +47,13 @@ const openIdConnectUrl = 'https://accounts.google.com';
 
 /* example client configuration */
 const clientId = '511828570984-7nmej36h9j2tebiqmpqh835naet4vci4.apps.googleusercontent.com';
+//const clientId = 'your azure ad b2c application id';
 const redirectUri = 'http://localhost:8000/app/redirect.html';
 const scope = 'openid';
+
+/* example of Azure AD B2C provider */
+const openIdAADB2CConnectUrl = 'https://yoursubdomain.b2clogin.com/yoursubdomain.onmicrosoft.com/v2.0';
+const openIdAADB2CConnectPrms = 'p=B2C_1_UserFlowName';
 
 /**
  * The Test application.
@@ -90,6 +95,19 @@ export class App {
 
   fetchServiceConfiguration() {
     AuthorizationServiceConfiguration.fetchFromIssuer(openIdConnectUrl)
+        .then(response => {
+          log('Fetched service configuration', response);
+          this.configuration = response;
+          this.showMessage('Completed fetching configuration');
+        })
+        .catch(error => {
+          log('Something bad happened', error);
+          this.showMessage(`Something bad happened ${error}`)
+        });
+  }
+
+  fetchAADB2CServiceConfiguration() {
+    AuthorizationServiceConfiguration.fetchFromIssuer(new OpenIdIssuerConfigs(openIdAADB2CConnectUrl, openIdAADB2CConnectPrms))
         .then(response => {
           log('Fetched service configuration', response);
           this.configuration = response;
